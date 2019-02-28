@@ -12,13 +12,15 @@
 
 
 (defn- bitmask->granted-actions [bitmask actions]
-  (let [bitmask-actions (zipmap (iterate #(* 2 %) 1) actions)
-        granted-actions (for [[action-bit action] bitmask-actions]
-                          (when (pos? (bit-and bitmask action-bit))
-                            action))
-        granted-actions (filter (complement nil?) granted-actions)]
-    (when-not (empty? granted-actions)
-      (into #{} (filter (complement nil?) granted-actions)))))
+  (if (= bitmask (int (dec (Math/pow 2 (count actions)))))
+    #{:*}
+    (let [bitmask-actions (zipmap (iterate #(* 2 %) 1) actions)
+          granted-actions (for [[action-bit action] bitmask-actions]
+                            (when (pos? (bit-and bitmask action-bit))
+                              action))
+          granted-actions (filter (complement nil?) granted-actions)]
+      (when-not (empty? granted-actions)
+        (into #{} (filter (complement nil?) granted-actions))))))
 
 
 (defn bitmask-actions->permissions [all-permissions domain-bitmasks]

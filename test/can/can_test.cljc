@@ -39,4 +39,7 @@
         bitmasks ["admin:5" "support:4" "printers:0"]]
     (is (= {:admin #{:create :update}
             :support #{:edit-tix}}
-           (can/bitmask-actions->permissions all-permissions bitmasks)))))
+           (can/bitmask-actions->permissions all-permissions bitmasks)))
+
+    (is (= {:admin #{:*}}
+           (can/bitmask-actions->permissions all-permissions ["admin:15"])))))
