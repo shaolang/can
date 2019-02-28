@@ -22,11 +22,15 @@
       (when-not (empty? granted-actions)
         (into #{} (filter (complement nil?) granted-actions))))))
 
+(defn- parse-long [s]
+  #?(:clj  (Long/parseLong s)
+     :cljs (js/parseInt s)))
+
 
 (defn bitmask-actions->permissions [all-permissions domain-bitmasks]
   (let [bitmasks (into [] (comp (map #(str/split % #":"))
                                 (map (fn [[k v]] [(keyword k)
-                                                  (Long/parseLong v)])))
+                                                  (parse-long v)])))
                        domain-bitmasks)
         permissions (for [[domain bitmask] bitmasks]
                       (let [actions         (get all-permissions domain)

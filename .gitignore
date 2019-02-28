@@ -1,6 +1,8 @@
 /target
+/node_modules
 /classes
 /checkouts
+package-lock.json
 profiles.clj
 pom.xml
 pom.xml.asc
@@ -11,3 +13,4 @@ pom.xml.asc
 /.nrepl-port
 .hgignore
 .hg/
+.cljs_node_repl/
