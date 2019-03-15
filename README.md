@@ -1,6 +1,69 @@
-# can-i
+# can
 
-A permissions library, inspired by [agynamix/permissions][permissions].
+A permissions library for Clojure(Script), inspired by
+[agynamix/permissions][permissions].
+
+## Basic Usage
+
+The core API lives in `can.can` (not `can.core`) and is recommended
+to be aliased as `can`, i.e., `(require '[can.can :as can])`.
+
+Permissions is a map of sets, where the key is the domain, and the
+values the rights applicable to that domain. `can.can/allow?` takes
+the permissions map and an domain/action string to determine whether
+the user is allowed to perform the said action:
+
+```clojure
+(def permissions {:support #{:create-ticket :update-ticket}
+                  :printer #{:print}})
+
+
+(print (can/allow? permissions "support:create-ticket"))    ;; outputs "true"
+(print (can/allow? permissions "print:clear-spool"))        ;; outputs "false"
+```
+
+## Bitmasks permissions
+`can.can/bitmask-actions->permissions` takes the full permissions setup (i.e.,
+all available domains and actions available in your application) and
+converts a list of `<domain>:<bitmask>` into a permissions map.
+
+```clojure
+(def all-permissions {:admin   [:create :read :update :delete :approve :reject]
+                      :support [:create-ticket :update-ticket :close-ticket]
+                      :printer [:print :clear-spool]})
+
+
+(def alice-permissions
+  (can/bitmask-actions->permissions all-permissions
+                                    ["admin:7" "printer:1"]))
+
+(print alice-permissions)   ;; outputs {:admin #{:create :read :update}
+                            ;;          :printer #{:print}}
+```
+
+Note that the order of the available actions in each domain matters, i.e.,
+new actions should be appended to the end of the action list.
+
+`can.can/bitmask-actions->permissions` makes it trivial to implement
+access control list/matrix in your application, e.g., the relational
+database could have a table that looks like the following:
+
+<table>
+  <thead>
+    <tr>
+      <th>userid</th>
+      <th>admin</th>
+      <th>support</th>
+      <th>printer</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>alice</td><td>7</td><td>0</td><td>1</td></tr>
+    <tr><td>bob</td><td>0</td><td>7</td><td>2</td></tr>
+  </tbody>
+</table>
+
+Note that the total number of actions per domain cannot exceed 64.
 
 ## License
 
@@ -9,12 +72,5 @@ Copyright © 2019 Shaolang Ai
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which is available at
 http://www.eclipse.org/legal/epl-2.0.
-
-This Source Code may also be made available under the following Secondary
-Licenses when the conditions for such availability set forth in the Eclipse
-Public License, v. 2.0 are satisfied: GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or (at your
-option) any later version, with the GNU Classpath Exception which is available
-at https://www.gnu.org/software/classpath/license.html.
 
 [permissions]: https://github.com/tuhlmann/permissions
