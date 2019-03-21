@@ -1,4 +1,5 @@
 # can
+[![Clojars Project](https://img.shields.io/clojars/v/can.svg)](https://clojars.org/can)
 
 A permissions library for Clojure(Script), inspired by
 [agynamix/permissions][permissions].

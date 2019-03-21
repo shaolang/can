@@ -10,4 +10,7 @@
                                   [lambdaisland/kaocha-cljs "0.0-16"]
                                   [org.clojure/clojure      "1.10.0"]]}}
 
-  :repl-options {:init-ns can.can})
+  :repl-options {:init-ns can.can}
+
+  :scm {:name "git"
+        :url "https://github.com/shaolang/can"})
