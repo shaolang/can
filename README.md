@@ -63,7 +63,9 @@ database could have a table that looks like the following:
   </tbody>
 </table>
 
-Note that the total number of actions per domain cannot exceed 64.
+Note that when using bitmasks permissions, the total number of actions
+per domain cannot exceed 63 on Clojure, and cannot exceed 52 on
+ClojureScript.
 
 ## License
 
