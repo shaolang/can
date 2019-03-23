@@ -4,6 +4,9 @@
 A permissions library for Clojure(Script), inspired by
 [agynamix/permissions][permissions].
 
+__Library is still undergoing development, so expect frequent changes
+to the API.__
+
 ## Basic Usage
 
 The core API lives in `can.can` (not `can.core`) and is recommended
