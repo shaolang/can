@@ -43,3 +43,14 @@
 
     (is (= {:admin #{:*}}
            (can/bitmask-actions->permissions all-permissions ["admin:15"])))))
+
+
+(deftest permissions->bitmask-actions-test
+  (let [all-permissions {:admin [:create :read :update :delete]
+                         :support [:create-tix :read-tix :edit-tx :delete-tix]}
+        user-permissions {:admin #{:create :delete}
+                          :support #{:*}
+                          :printer [:print]}]
+    (is (= {:admin 9 :support 15 :printer 0}
+           (can/permissions->bitmask-actions all-permissions
+                                             user-permissions)))))
