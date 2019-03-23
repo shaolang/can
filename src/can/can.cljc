@@ -36,11 +36,7 @@
 
 
 (defn bitmask-actions->permissions [all-permissions domain-bitmasks]
-  (let [bitmasks (into [] (comp (map #(str/split % #":"))
-                                (map (fn [[k v]] [(keyword k)
-                                                  (parse-long v)])))
-                       domain-bitmasks)
-        permissions (for [[domain bitmask] bitmasks]
+  (let [permissions (for [[domain bitmask] domain-bitmasks]
                       (let [actions         (get all-permissions domain)
                             granted-actions (bitmask->granted-actions bitmask
                                                                       actions)]
