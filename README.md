@@ -29,7 +29,7 @@ the user is allowed to perform the said action:
 ## Bitmasks permissions
 `can.can/bitmask-actions->permissions` takes the full permissions setup (i.e.,
 all available domains and actions available in your application) and
-converts a list of `<domain>:<bitmask>` into a permissions map.
+converts a map of domain-bitmask pair into a permissions map.
 
 ```clojure
 (def all-permissions {:admin   [:create :read :update :delete :approve :reject]
@@ -39,7 +39,7 @@ converts a list of `<domain>:<bitmask>` into a permissions map.
 
 (def alice-permissions
   (can/bitmask-actions->permissions all-permissions
-                                    ["admin:7" "printer:1"]))
+                                    {:admin 7 :printer 1}))
 
 (print alice-permissions)   ;; outputs {:admin #{:create :read :update}
                             ;;          :printer #{:print}}
@@ -72,7 +72,8 @@ per domain cannot exceed 63 on Clojure, and cannot exceed 52 on
 ClojureScript.
 
 `can.can/permissions->bitmask-actions` takes converts the permissions map
-into a map of domain-bitmask pair, making it easy to persist changes back
+into a map of domain-bitmask pair (the inverse of
+`can.can/bitmask-actions->permissions`), making it easy to persist changes back
 to the datastore:
 
 ```clojure
