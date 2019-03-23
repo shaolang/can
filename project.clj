@@ -1,4 +1,4 @@
-(defproject can "0.1.2-SNAPSHOT"
+(defproject can "0.2.0"
   :description "Permissions library for Clojure[Script]"
   :url "https://github.com/shaolang/can"
   :license {:name "EPL-2.0"
