@@ -71,6 +71,17 @@ Note that when using bitmasks permissions, the total number of actions
 per domain cannot exceed 63 on Clojure, and cannot exceed 52 on
 ClojureScript.
 
+`can.can/permissions->bitmask-actions` takes converts the permissions map
+into a map of domain-bitmask pair, making it easy to persist changes back
+to the datastore:
+
+```clojure
+(print (permissions->bitmask-actions all-permissions
+                                     alice-permissions))  ;; outputs {:admin 7
+                                                          ;;          :support 0
+                                                          ;;          :printer 1}
+```
+
 ## License
 
 Copyright © 2019 Shaolang Ai
