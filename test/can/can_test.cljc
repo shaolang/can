@@ -30,31 +30,3 @@
 
     (testing "user action cannot be a wildcard"
       (is (false? (can/allow? permissions "misc:*"))))))
-
-
-(deftest bitmask-actions->permissions-test
-  (let [all-permissions {:admin [:create :read :update :delete]
-                         :support [:create-tix :read-tix :edit-tix :delete-tix]
-                         :printers [:print]}
-        bitmasks {:admin 5 :support 4 :printers 0}]
-    (is (= {:admin #{:create :update}
-            :support #{:edit-tix}}
-           (can/bitmask-actions->permissions all-permissions bitmasks)))
-
-    (is (= {:admin #{:*}}
-           (can/bitmask-actions->permissions all-permissions {:admin 15})))))
-
-
-(deftest permissions->bitmask-actions-test
-  (let [all-permissions {:admin [:create :read :update :delete]
-                         :support [:create-tix :read-tix :edit-tx :delete-tix]}
-        user-permissions {:admin #{:create :delete}
-                          :support #{:*}
-                          :printer #{:print}}]
-    (is (= {:admin 9 :support 15}
-           (can/permissions->bitmask-actions all-permissions
-                                             user-permissions)))
-
-    (is (= {:admin 1 :support 0}
-           (can/permissions->bitmask-actions all-permissions
-                                             {:admin #{:create}})))))
