@@ -50,7 +50,11 @@
                          :support [:create-tix :read-tix :edit-tx :delete-tix]}
         user-permissions {:admin #{:create :delete}
                           :support #{:*}
-                          :printer [:print]}]
-    (is (= {:admin 9 :support 15 :printer 0}
+                          :printer #{:print}}]
+    (is (= {:admin 9 :support 15}
            (can/permissions->bitmask-actions all-permissions
-                                             user-permissions)))))
+                                             user-permissions)))
+
+    (is (= {:admin 1 :support 0}
+           (can/permissions->bitmask-actions all-permissions
+                                             {:admin #{:create}})))))

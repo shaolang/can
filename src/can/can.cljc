@@ -56,8 +56,8 @@
 
 
 (defn permissions->bitmask-actions [all-permissions granted-permissions]
-  (->> granted-permissions
-       (map (fn [[domain actions]]
-              [domain (granted-actions->bitmask actions
-                                                (get all-permissions domain))]))
+  (->> all-permissions
+       (map (fn [[domain all-actions]]
+              [domain (granted-actions->bitmask (get granted-permissions domain)
+                                                all-actions)]))
        (into {})))
