@@ -27,7 +27,10 @@ the user is allowed to perform the said action:
 ```
 
 ## Bitmasks permissions
-`can.can/bitmask-actions->permissions` takes the full permissions setup (i.e.,
+__Breaking change in 0.3.0: bitmask-related functions reside in `can.bitmask`
+now, and they are renamed as decode and encode.__
+
+`can.bitmask/decode` takes the full permissions setup (i.e.,
 all available domains and actions available in your application) and
 converts a map of domain-bitmask pair into a permissions map.
 
@@ -38,8 +41,7 @@ converts a map of domain-bitmask pair into a permissions map.
 
 
 (def alice-permissions
-  (can/bitmask-actions->permissions all-permissions
-                                    {:admin 7 :printer 1}))
+  (can/decode all-permissions {:admin 7 :printer 1}))
 
 (print alice-permissions)   ;; outputs {:admin #{:create :read :update}
                             ;;          :printer #{:print}}
@@ -48,7 +50,7 @@ converts a map of domain-bitmask pair into a permissions map.
 Note that the order of the available actions in each domain matters, i.e.,
 new actions should be appended to the end of the action list.
 
-`can.can/bitmask-actions->permissions` makes it trivial to implement
+`can.bitmask/decode` makes it trivial to implement
 access control list/matrix in your application, e.g., the relational
 database could have a table that looks like the following:
 
@@ -71,16 +73,14 @@ Note that when using bitmasks permissions, the total number of actions
 per domain cannot exceed 63 on Clojure, and cannot exceed 52 on
 ClojureScript.
 
-`can.can/permissions->bitmask-actions` takes converts the permissions map
-into a map of domain-bitmask pair (the inverse of
-`can.can/bitmask-actions->permissions`), making it easy to persist changes back
-to the datastore:
+`can.bitmask/encode` converts the permissions map into a map of
+domain-bitmask pair (somewhat the inverse of `can.bitmask/decode`),
+making it easy to persist changes back to the datastore:
 
 ```clojure
-(print (permissions->bitmask-actions all-permissions
-                                     alice-permissions))  ;; outputs {:admin 7
-                                                          ;;          :support 0
-                                                          ;;          :printer 1}
+(print (encode all-permissions alice-permissions))  ;; outputs {:admin 7
+                                                    ;;          :support 0
+                                                    ;;          :printer 1}
 ```
 
 ## License
