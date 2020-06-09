@@ -26,6 +26,27 @@ the user is allowed to perform the said action:
 (print (can/allow? permissions "print:clear-spool"))        ;; outputs "false"
 ```
 
+You could also use `:*` to grant permissions:
+
+```clojure
+(def super-support {:support #{:*}})
+
+(print (can/allow? super-support "support:launch-nuclear"))   ;; outputs "true"
+(print (can/allow? super-support "print:clear-spool"))        ;; outputs "false"
+```
+
+And even superuser:
+
+```clojure
+(def superuser {:* #{:*}})
+
+(print (can/allow? superuser "hello:world"))      ;; outputs "true"
+```
+
+Unlike permissions, actions cannot use `*`, i.e., doing
+`(can/allow? permissions "*:create-ticket")` or
+`(can/allow? permissions "admin:*")` will always return `false`.
+
 ## Bitmasks permissions
 __Breaking change in 0.3.0: bitmask-related functions reside in `can.bitmask`
 now, and they are renamed as decode and encode.__
