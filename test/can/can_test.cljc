@@ -30,3 +30,15 @@
 
     (testing "user action cannot be a wildcard"
       (is (false? (can/allow? permissions "misc:*"))))))
+
+
+(deftest actions->permissions-test
+  (testing "with no full domain/action map given"
+    (is (= {:admin    #{:create :read}
+            :support  #{:close-ticket}}
+           (can/actions->permissions
+             ["admin:create" "admin:read" "support:close-ticket"]))))
+
+  (testing "identical domain/action names are handled properly"
+    (is (= {:support #{:support}}
+           (can/actions->permissions ["support:support"])))))
