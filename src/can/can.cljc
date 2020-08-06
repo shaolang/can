@@ -1,5 +1,10 @@
 (ns can.can
-  (:require [clojure.string :as str]))
+  (:require [clojure.set :as set]
+            [clojure.string :as str]))
+
+(defn- subset? [xs ys]
+  (set/subset? (set xs) (set ys)))
+
 
 (defn actions->permissions
   ([actions]
@@ -7,7 +12,15 @@
         (map #(map keyword (str/split % #":")))
         (group-by first)
         (map (fn [[k vs]] [k (set (map second vs))]))
-        (into {}))))
+        (into {})))
+  ([domain-actions actions]
+   (let [permissions  (actions->permissions actions)
+         domains      (set (keys domain-actions))]
+     (if (and (subset? (keys permissions) domains)
+              (every? (fn [[k vs]] (subset? vs (get domain-actions k)))
+                      permissions))
+       permissions
+       :unknown-domain-action-found))))
 
 
 (defn allow? [permissions action]

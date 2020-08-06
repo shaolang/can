@@ -41,4 +41,17 @@
 
   (testing "identical domain/action names are handled properly"
     (is (= {:support #{:support}}
-           (can/actions->permissions ["support:support"])))))
+           (can/actions->permissions ["support:support"]))))
+
+  (testing "with full domain-action map given with no unknown action given"
+    (is (= {:admin    #{:delete}
+            :support  #{:edit-ticket}}
+           (can/actions->permissions {:admin   #{:create :read :update :delete}
+                                      :support #{:create-ticket :edit-ticket}}
+                                     ["admin:delete" "support:edit-ticket"]))))
+
+  (testing "with full domain-action map given and unknown action given"
+    (is (= :unknown-domain-action-found
+           (can/actions->permissions {:admin    #{:create :read}
+                                      :support  #{:create-ticket}}
+                                     ["admin:create" "support:edit-ticket"])))))
