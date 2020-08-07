@@ -30,3 +30,12 @@
     (boolean (when-not (or (= action :*) (= domain :*))
                (or (some #{action} actions)
                    (some #{:*} actions))))))
+
+
+(defn permissions->actions [full-permissions permissions]
+  (->> permissions
+       (map (fn [[k vs]]
+              (let [kstr (name k)
+                    vs    (if (some #{:*} vs) (get full-permissions k) vs)]
+                [k (set (map #(format "%s%s" kstr %) vs))])))
+       (into {})))

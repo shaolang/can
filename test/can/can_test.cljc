@@ -55,3 +55,12 @@
            (can/actions->permissions {:admin    #{:create :read}
                                       :support  #{:create-ticket}}
                                      ["admin:create" "support:edit-ticket"])))))
+
+
+(deftest permissions->actions-test
+  (is (= {:admin    #{"admin:create" "admin:read" "admin:update" "admin:delete"}
+          :support  #{"support:create-ticket"}}
+         (can/permissions->actions {:admin    #{:create :read :update :delete}
+                                    :support  #{:create-ticket :edit-ticket}}
+                                   {:admin #{:*}
+                                    :support #{:create-ticket}}))))
