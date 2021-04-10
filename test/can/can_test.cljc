@@ -1,35 +1,28 @@
 (ns can.can-test
-  (:require #?(:clj  [clojure.test :refer [deftest is testing]]
-               :cljs [cljs.test :refer-macros [deftest is testing]])
+  (:require #?(:clj  [clojure.test :refer [are deftest is testing]]
+               :cljs [cljs.test :refer-macros [are deftest is testing]])
             [can.can :as can]))
 
 (deftest allow?-test
   (let [permissions {:admin   #{:create :read :update :delete}
                      :support #{:create-ticket :close-ticket}
                      :audit   #{:*}}]
-    (doseq [action ["admin:create"      ;; specified domain and known action
-                    "audit:print-log"]] ;; specified domain with wildcard action
-      (testing (str "should allow " action)
-        (is (true? (can/allow? permissions action)))))
+    (are [action expected] (= (can/allow? permissions action) expected)
 
-
-    (doseq [action ["admin:approve" ;; specified domain but unknown action
-                    "misc:print"    ;; unknown domain and unknown action
-                    "admin:*"       ;; specified domain and wildcard action
-                    "*:create"]]    ;; wildcard domain
-      (testing (str "should not allow " action)
-        (is (false? (can/allow? permissions action))))))
-
+         ;; input             expected
+         "admin:create"       true      ;; specified domain and known action
+          "audit:print-log"   true      ;; specified domain with wildcard action
+          "admin:approve"     false     ;; specified domain but unknown action
+          "misc:print"        false     ;; unknown domain and unknown action
+          "*:create"          false))   ;; wildcard domain
 
   (let [permissions {:* #{:*}}]   ;; [almost] anything allowed
-    (testing "allows everything"
-      (is (true? (can/allow? permissions "hello:world"))))
+    (are [action expected] (= (can/allow? permissions action) expected)
 
-    (testing "user domain cannot be a wildcard"
-      (is (false? (can/allow? permissions "*:delete"))))
-
-    (testing "user action cannot be a wildcard"
-      (is (false? (can/allow? permissions "misc:*"))))))
+        ;;input               expected
+        "hello:world"         true      ;; allows everything
+        "*:delete"            false     ;; domain cannot be a wildcard
+        "misc:*"              false)))  ;; user action cannot be a wildcard
 
 
 (deftest actions->permissions-test
