@@ -29,7 +29,9 @@
         actions         (get permissions domain (:* permissions))]
     (boolean (when-not (or (= action :*) (= domain :*))
                (or (some #{action} actions)
-                   (some #{:*} actions))))))
+                   (some #{:*} actions)
+                   (and (contains? permissions domain)
+                        (nil? action)))))))
 
 
 (defn permissions->actions [full-permissions permissions]

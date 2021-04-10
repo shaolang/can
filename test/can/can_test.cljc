@@ -7,14 +7,18 @@
   (let [permissions {:admin   #{:create :read :update :delete}
                      :support #{:create-ticket :close-ticket}
                      :audit   #{:*}}]
-    (are [action expected] (= (can/allow? permissions action) expected)
+    (are [action expected] (and action
+                                (= (can/allow? permissions action) expected))
 
-         ;; input             expected
-         "admin:create"       true      ;; specified domain and known action
+          ;; input            expected
+          "admin:create"      true      ;; specified domain and known action
           "audit:print-log"   true      ;; specified domain with wildcard action
           "admin:approve"     false     ;; specified domain but unknown action
           "misc:print"        false     ;; unknown domain and unknown action
-          "*:create"          false))   ;; wildcard domain
+          "*:create"          false     ;; wildcard domain
+          "admin"             true      ;; domain only check
+          "*"                 false     ;; domain-only cannot be a wildcard
+          "create"            false))   ;; action only check
 
   (let [permissions {:* #{:*}}]   ;; [almost] anything allowed
     (are [action expected] (= (can/allow? permissions action) expected)
@@ -22,7 +26,9 @@
         ;;input               expected
         "hello:world"         true      ;; allows everything
         "*:delete"            false     ;; domain cannot be a wildcard
-        "misc:*"              false)))  ;; user action cannot be a wildcard
+        "misc:*"              false     ;; user action cannot be a wildcard
+        "admin"               true      ;; domain only check
+        "*"                   false)))  ;; domain-only cannot be a wildcard
 
 
 (deftest actions->permissions-test
