@@ -6,9 +6,9 @@
 
   :aliases {"test-cljs"  ["trampoline" "run" "-m" "kaocha.runner" "unit-cljs"]}
 
-  :profiles {:dev {:dependencies [[lambdaisland/kaocha      "0.0-389"]
-                                  [lambdaisland/kaocha-cljs "0.0-16"]
-                                  [org.clojure/clojure      "1.10.0"]]}}
+  :profiles {:dev {:dependencies [[lambdaisland/kaocha      "1.0.829"]
+                                  [lambdaisland/kaocha-cljs "0.0-71"]
+                                  [org.clojure/clojure      "1.10.3"]]}}
 
   :repl-options {:init-ns can.can}
 
